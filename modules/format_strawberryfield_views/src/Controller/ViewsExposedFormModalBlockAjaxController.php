@@ -2,6 +2,7 @@
 
 namespace Drupal\format_strawberryfield_views\Controller;
 
+use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
@@ -157,7 +158,12 @@ class ViewsExposedFormModalBlockAjaxController extends ControllerBase {
         $block_view = $this->entityTypeManager
           ->getViewBuilder('block')
           ->view($block_entity);
-        $block_view = (string) $this->renderer->renderInIsolation($block_view);
+
+        $block_view = (string) DeprecationHelper::backwardsCompatibleCall(
+          \Drupal::VERSION, '10.3.0',
+          fn () => $this->renderer->renderInIsolation($block_view),
+          fn () => $this->renderer->renderPlain($block_view),
+        );
         $response->addCommand(new ReplaceCommand('[data-drupal-modalblock-selector="js-modal-form-views-block-id-' .$block_id.'"]', $block_view));
       }
     }

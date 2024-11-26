@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Drupal\format_strawberryfield\Form;
 
+use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\OpenOffCanvasDialogCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
@@ -147,7 +148,11 @@ class MetadataDisplayForm extends ContentEntityForm {
           '#template' => $form_state->getValue('twig')[0]['value'],
           '#context'  => ['data' => []],
         ];
-        $this->renderer->renderInIsolation($build);
+        $rendered = (string) DeprecationHelper::backwardsCompatibleCall(
+          \Drupal::VERSION, '10.3.0',
+          fn () => $this->renderer->renderInIsolation($build),
+          fn () => $this->renderer->renderPlain($build),
+        );
       }
     }
     catch (\Exception $exception) {
