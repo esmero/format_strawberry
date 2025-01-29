@@ -297,7 +297,7 @@ class MetadataExposeDisplayController extends ControllerBase {
             break;
 
           case 'application/xml':
-          case 'text/text':
+          case 'text/plain':
           case 'text/turtle':
           case 'text/html':
           case 'text/csv':
@@ -316,7 +316,7 @@ class MetadataExposeDisplayController extends ControllerBase {
 
         if ($response) {
           // Set CORS. IIIF and others will assume this is true.
-          $response->headers->set('access-control-allow-origin','*');
+          $response->headers->set('Access-Control-Allow-Origin','*');
           $response->addCacheableDependency($node);
           $response->addCacheableDependency($metadatadisplay_entity);
           $response->addCacheableDependency($metadataexposeconfig_entity);
